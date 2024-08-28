@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="work.chncyl.base.mapper.UserDetailsMapper">
+    <resultMap id="AuthorityMap" type="work.chncyl.base.entity.LoginAuthorityInfo">
+        <id column="id" property="roleId" javaType="int" jdbcType="INTEGER"/>
+        <result column="name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="DisplayName" property="displayName" jdbcType="VARCHAR"/>
+        <result column="IsDefault" property="isDefault" jdbcType="BOOLEAN"/>
+        <association property="menus" javaType="java.util.List" column="id"
+                     select="getRoleMenuButtonInfo"/>
+    </resultMap>
+
+    <select id="getUserDetail" resultType="work.chncyl.base.entity.LoginUserDetail">
+        SELECT a.id userId,
+               UserName,
+               Password,
+               UserType,
+               Name nickName,
+               HeadImage,
+               OrganId,
+               o.OrganName,
+               a.PhoneNumber,
+               o.OrganPath
+        FROM abpusers a
+                 LEFT JOIN organization o on a.OrganId = o.Id
+        WHERE a.IsDeleted = 0
+          AND o.IsDeleted = 0
+        <if test="phoneNum != null and phoneNum != ''">
+            AND a.PhoneNumber = #{phoneNum,jdbcType=VARCHAR}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND a.UserName = #{userName,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getUserAuthorityInfo" resultMap="AuthorityMap">
+        SELECT a.id,
+               a.Name,
+               a.DisplayName,
+               a.IsDefault
+        FROM AbpRoles a
+                 INNER JOIN abpuserroles b ON a.Id = b.RoleId
+        WHERE a.IsDeleted = 0
+          AND b.UserId = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getUserManageOrgan" resultType="work.chncyl.base.entity.LoginManageOrgan">
+        select b.id roleId,
+               b.roleLevel,
+               a.organId,
+               c.organName,
+               c.organPath
+        from UserManageOrgnizationMap a
+                 inner join AbpRoles b on a.roleid = b.id
+                 inner join Organization c on a.organid = c.id
+        where b.IsDeleted = 0
+          and c.IsDeleted = 0
+          and a.UserId = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getRoleMenuButtonInfo" resultType="work.chncyl.base.entity.LoginMenuButtonInfo">
+        SELECT a.Id,
+               a.`Group`,
+               a.Type,
+               a.ParentId,
+               a.PermissionName,
+               a.DisplayName,
+               a.Description,
+               a.Url,
+               a.IconPath,
+               a.ClassName,
+               a.Sort,
+               a.Tags,
+               a.Tags1
+        FROM menubutton a
+                 LEFT JOIN menubuttonrolesetting b ON b.MenuButtonId = a.Id
+        WHERE b.RoleId = #{roleId,jdbcType=VARCHAR}
+          AND a.IsDeleted = 0
+    </select>
+</mapper>
