@@ -28,7 +28,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
                 setDetails(request, authenticationToken);
             } catch (IOException e) {
                 e.printStackTrace();
-                authenticationToken = new CustomUsernamePasswordAuthenticationToken("", "");
+                authenticationToken = new CustomUsernamePasswordAuthenticationToken("", "", "");
             }
             return getAuthenticationManager().authenticate(authenticationToken);
         }
