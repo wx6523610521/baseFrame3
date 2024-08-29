@@ -7,6 +7,9 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+/**
+ * spring工具
+ */
 @Component
 public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
     private static ApplicationContext applicationContext;
@@ -14,7 +17,7 @@ public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
     private static Environment environment;
 
     public static <T> T getBean(Class<T> clz) {
-        return (T) applicationContext.getBean(clz);
+        return applicationContext.getBean(clz);
     }
 
     public static Object getBean(String beanName) {
@@ -22,7 +25,7 @@ public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
     }
 
     public static <T> T getBean(String beanName, Class<T> clz) {
-        return (T) applicationContext.getBean(beanName, clz);
+        return applicationContext.getBean(beanName, clz);
     }
 
     public static String getEnvironmentProperty(String property) {
@@ -30,7 +33,7 @@ public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
     }
 
     public static <T> T getEnvironmentProperty(String property, Class<T> targetType) {
-        return (T) environment.getProperty(property, targetType);
+        return environment.getProperty(property, targetType);
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

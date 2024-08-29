@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class LoginManageOrgan {
-  private int roleId;
+    private int roleId;
 
-  private int roleLevel;
+    private int roleLevel;
 
-  private String organId;
+    private String organId;
 
-  private String organName;
+    private String organName;
 
-  private String organPath;
+    private String organPath;
 }

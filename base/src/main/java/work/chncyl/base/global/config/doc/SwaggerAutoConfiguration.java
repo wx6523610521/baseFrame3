@@ -51,12 +51,12 @@ public class SwaggerAutoConfiguration {
     private Info getInfo() {
         if (this.swaggerConfig == null)
             this.swaggerConfig = new SwaggerConfig();
-        Contact contact = (new Contact()).name(!StringUtils.hasLength(this.swaggerConfig.getAuthor()) ? "": this.swaggerConfig.getAuthor());
+        Contact contact = (new Contact()).name(!StringUtils.hasLength(this.swaggerConfig.getAuthor()) ? "" : this.swaggerConfig.getAuthor());
         return (new Info())
-                .title(!StringUtils.hasLength(this.swaggerConfig.getTitle()) ? "": this.swaggerConfig.getTitle())
-                        .version(!StringUtils.hasLength(this.swaggerConfig.getVersion()) ? "": this.swaggerConfig.getVersion())
-                                .description(!StringUtils.hasLength(this.swaggerConfig.getDescription()) ? "": this.swaggerConfig.getDescription())
-                                        .contact(contact);
+                .title(!StringUtils.hasLength(this.swaggerConfig.getTitle()) ? "" : this.swaggerConfig.getTitle())
+                .version(!StringUtils.hasLength(this.swaggerConfig.getVersion()) ? "" : this.swaggerConfig.getVersion())
+                .description(!StringUtils.hasLength(this.swaggerConfig.getDescription()) ? "" : this.swaggerConfig.getDescription())
+                .contact(contact);
     }
 
     private ExternalDocumentation externalDocumentation() {

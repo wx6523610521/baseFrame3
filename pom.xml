@@ -22,6 +22,7 @@
     <modules>
         <module>main</module>
         <module>base</module>
+        <module>service</module>
     </modules>
     <dependencies>
         <!-- springBoot环境配置-->
@@ -52,11 +53,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.3</version>
         </dependency>
 
         <!--        数据库-->

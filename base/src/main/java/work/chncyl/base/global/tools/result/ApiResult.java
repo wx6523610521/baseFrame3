@@ -12,11 +12,11 @@ import java.io.Serializable;
 
 public class ApiResult<T> extends ResponseEntity<ApiResult.Result<T>> implements Serializable {
     public ApiResult(Result<T> body, HttpStatus status) {
-        super(body, (HttpStatusCode) status);
+        super(body, status);
     }
 
     public ApiResult(MultiValueMap<String, String> headers, HttpStatus status) {
-        super(headers, (HttpStatusCode) status);
+        super(headers, status);
     }
 
     public ApiResult(Result<T> body, MultiValueMap<String, String> headers, HttpStatus status) {

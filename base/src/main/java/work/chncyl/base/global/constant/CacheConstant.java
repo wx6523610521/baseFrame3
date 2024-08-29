@@ -1,5 +1,8 @@
 package work.chncyl.base.global.constant;
 
-public class CacheConstant {
-  public static final String WEAK_PASSWORD_REDIS_KEY = "";
+/**
+ * 全局常量
+ */
+public interface CacheConstant {
+    String WEAK_PASSWORD_REDIS_KEY = "";
 }

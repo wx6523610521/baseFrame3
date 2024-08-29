@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import work.chncyl.base.global.handler.FilterExceptionHandler;
 import work.chncyl.base.global.tools.RedisUtils;

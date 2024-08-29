@@ -11,6 +11,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+/**
+ * RSA加解密工具
+ */
 public class AuthenticateUtil {
     private static final String PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIWGxgtKoHuFN03xnc3CmMZqpYzUyjjuo0ESzC0JOAWfOayMjgFUG3eXG0Y+siobgogbWvafoKRbu8GK7zWs8Qcr7sMmMNBzcPkjj8tth1ISg43kv0pyX6cTqaz1fN5W44zKP3bBELuof8OEPLPOnVBUcLE3nQc5lk3fosV3DiHJAgMBAAECgYAC7YKYKsm8C5670clxAoxRBXOd0+ifOPRRb/UUI7ibvvMHyokulEaJ58FMWAGWFMZW76qd78AY+n3yb3ZxSdp7EpspQBkDOSfP/hNuk5BshWKB/F5tFljqduuGZc2jNPv7d1lbRnZ9Ejy4WvLfGk/lOR94fgHXXkd+BiRgY8QekQJBANEZqDsBlPDeGK2gzSZyg8zz0+DQ+2M6M/JDOjEVJ5WfyITcUzAXreYDOlHwCruBgZ5BMQ5RZm9gEuEBT1zjJzUCQQCjeb2FxVrVlbNorMin0Op0DZykjD7jUjLZEtcBrp2GcR1JVo6qfYBbu1EjeQKmncLFvTKU1oRxVyJMDdv6Xd7FAkBVZ7Ve5HaBKzXJNTSVz5Al1jFkUfdbwBoXiX3rLkjMxEaSfas8qW9N02Ous+yuSWc3zEjNIFJGi2cqn+5aci1BAkEAk1WTZE8csMb9LWgcaHM3+2SROxRTUZmxzkbWlOOFgbfMx15Fso7t8r7+P9Q+eWBSPNlqDw7Pyz7W4GjVS+7yaQJAAM9QNYQEooSGtmw78ca+tYxA3WHod4HAE78Wj1iWogiYqw5+CfOE8uM2DjScX3Lebxeou1KhtytnRW1If/8jUQ==";
 
@@ -56,9 +59,4 @@ public class AuthenticateUtil {
         }
     }
 
-    public static void main(String[] args) {
-        String a = encrypt("abccc");
-        System.out.println(a);
-        System.out.println(decrypt(a));
-    }
 }

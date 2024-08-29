@@ -34,6 +34,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * SpringSecurity配置
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -119,7 +122,7 @@ public class SpringSecurityConfig {
                     allAnonymousAccess.addAll(infoEntry.getKey().getPathPatternsCondition().getPatterns().stream().map(PathPattern::getPatternString).toList());
             }
         }
-        return allAnonymousAccess.<String>toArray(new String[0]);
+        return allAnonymousAccess.toArray(new String[0]);
     }
 
     @Bean
@@ -138,6 +141,5 @@ public class SpringSecurityConfig {
         provider.setUserDetailsService(this.userDetailsService);
         return provider;
     }
-
 
 }

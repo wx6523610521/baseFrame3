@@ -2,12 +2,13 @@ package work.chncyl.base.global.tools;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 正则工具
+ */
 public class RegexUtils {
 
     /**
      * 用户名是否符合规范（^[\u4E00-\u9FA5A-Za-z0-9_]+$）
-     *
-     * @return
      */
     public static boolean isValidUsername(String username) {
         if (StringUtils.isBlank(username)) {
@@ -19,9 +20,6 @@ public class RegexUtils {
 
     /**
      * URL是否规范（^((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&amp;%_\\./-~-]*)?$）
-     *
-     * @param url
-     * @return
      */
     public static boolean isValidUrl(String url) {
         if (StringUtils.isBlank(url)) {
@@ -32,8 +30,6 @@ public class RegexUtils {
 
     /**
      * 密码是否符合规范（[a-zA-Z\d]{6,20}）
-     *
-     * @return
      */
     public static boolean isValidPassword(String password) {
         if (null == password) {
@@ -45,23 +41,16 @@ public class RegexUtils {
 
     /**
      * 是否有效手机号码
-     *
-     * @param mobileNum
-     * @return
      */
     public static boolean isMobileNum(String mobileNum) {
         if (null == mobileNum) {
             return false;
         }
-
-        return mobileNum.matches("^((13[0-9])|(14[4,7])|(15[^4,\\D])|(17[0-9])|(18[0-9]))(\\d{8})$");
+        return mobileNum.matches("^((13[0-9])|(14[4,7])|(15[^4,\\D])|(17[0-9])|(18[0-9])|(19[0-9]))(\\d{8})$");
     }
 
     /**
      * 是否有效邮箱
-     *
-     * @param email
-     * @return
      */
     public static boolean isEmail(String email) {
         if (null == email) {
@@ -85,9 +74,6 @@ public class RegexUtils {
 
     /**
      * 是否数字(小数||整数)
-     *
-     * @param number
-     * @return
      */
     public static boolean isNumber(String number) {
         if (null == number) {
@@ -99,9 +85,6 @@ public class RegexUtils {
 
     /**
      * 是否整数
-     *
-     * @param number
-     * @return
      */
     public static boolean isInt(String number) {
         if (null == number) {
@@ -113,49 +96,37 @@ public class RegexUtils {
 
     /**
      * 是否正整数
-     *
-     * @param number
-     * @return
      */
     public static boolean isPositiveInt(String number) {
         if (null == number) {
             return false;
         }
 
-        return number.matches("^[+-]?(([1-9]{1}\\d*)|([0]{1}))$");
+        return number.matches("^[+]?(([1-9]{1}\\d*)|([0]{1}))$");
     }
 
     /**
      * 是否日期yyyy-mm-dd(yyyy/mm/dd)
-     *
-     * @param date
-     * @return
      */
     public static boolean isDate(String date) {
         if (null == date) {
             return false;
         }
-        return date.matches("^([1-2]\\d{3})[\\/|\\-](0?[1-9]|10|11|12)[\\/|\\-]([1-2]?[0-9]|0[1-9]|30|31)$");
+        return date.matches("^([1-2]\\d{3})[/|\\-](0?[1-9]|10|11|12)[/|\\-]([1-2]?[0-9]|0[1-9]|30|31)$");
     }
 
     /**
      * 逗号分隔的正则表达式
-     *
-     * @param str
-     * @return
      */
     public static String getCommaSparatedRegex(String str) {
         if (str == null) {
             return null;
         }
-
         return "^(" + str + ")|([\\s\\S]*," + str + ")|(" + str + ",[\\s\\S]*)|([\\s\\S]*," + str + ",[\\s\\S]*)$";
     }
 
     /**
      * 字符串包含
-     *
-     * @return
      */
     public static boolean contains(String str, String regex) {
         if (str == null || regex == null) {
@@ -167,9 +138,6 @@ public class RegexUtils {
 
     /**
      * 是否为16-22位银行账号
-     *
-     * @param bankAccount
-     * @return
      */
     public static boolean isBankAccount(String bankAccount) {
         if (null == bankAccount) {
@@ -188,8 +156,6 @@ public class RegexUtils {
 
     /**
      * 是否是qq号码
-     *
-     * @param qq
      */
     public static boolean isQQnumber(String qq) {
         if (StringUtils.isBlank(qq)) {

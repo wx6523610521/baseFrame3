@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import work.chncyl.base.global.tools.result.ApiResult;
 
+/**
+ * 全局异常处理
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({AuthenticationException.class})

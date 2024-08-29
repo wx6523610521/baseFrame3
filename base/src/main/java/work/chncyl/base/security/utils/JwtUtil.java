@@ -1,7 +1,5 @@
 package work.chncyl.base.security.utils;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwsHeader;
@@ -24,7 +22,7 @@ public class JwtUtil {
 
     public static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    private static final SecureDigestAlgorithm<SecretKey, SecretKey> ALGORITHM = (SecureDigestAlgorithm<SecretKey, SecretKey>) Jwts.SIG.HS256;
+    private static final SecureDigestAlgorithm<SecretKey, SecretKey> ALGORITHM = Jwts.SIG.HS256;
     /**
      * 过期时间 （秒）
      */
@@ -59,11 +57,11 @@ public class JwtUtil {
     }
 
     public static JwsHeader parseHeader(String token) {
-        return (JwsHeader) parseClaim(token).getHeader();
+        return parseClaim(token).getHeader();
     }
 
     public static Claims parsePayload(String token) {
-        return (Claims) parseClaim(token).getPayload();
+        return parseClaim(token).getPayload();
     }
 
     public Boolean isTokenEffective(String token) {

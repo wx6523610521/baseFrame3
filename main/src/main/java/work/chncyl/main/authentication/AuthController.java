@@ -1,4 +1,4 @@
-package work.chncyl.base;
+package work.chncyl.main.authentication;
 
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +13,6 @@ import work.chncyl.base.security.annotation.AnonymousAccess;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -29,7 +28,7 @@ public class AuthController {
         specCaptcha.setFont(9);
         String verCode = specCaptcha.text().toLowerCase();
         RedisUtils.set(codeId, verCode, 3L, TimeUnit.MINUTES);
-        specCaptcha.out((OutputStream) response.getOutputStream());
+        specCaptcha.out(response.getOutputStream());
     }
 
     @GetMapping({"/get"})

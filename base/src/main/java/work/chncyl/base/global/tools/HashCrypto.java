@@ -9,6 +9,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Hash算法加密、比对工具
+ */
 public class HashCrypto {
     private static void WriteNetworkByteOrder(byte[] buffer, int offset, int value) {
         buffer[offset] = (byte) (value >> 24);

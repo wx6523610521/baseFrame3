@@ -5,6 +5,9 @@ import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 弱密码检查配置
+ */
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "weak-password-check")

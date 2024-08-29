@@ -25,7 +25,7 @@ public class SecurityHandlerConfig {
             response.setStatus(200);
             response.setContentType("application/json");
             PrintWriter writer = response.getWriter();
-            LoginSuccessVo vo = BeanUtil.copyProperties(userDetail, LoginSuccessVo.class, new String[0]);
+            LoginSuccessVo vo = BeanUtil.copyProperties(userDetail, LoginSuccessVo.class);
             vo.setUserName(userDetail.getUsername());
             vo.setAccessToken(token);
             ApiResult<LoginSuccessVo> ok = ApiResult.OK(vo);
