@@ -1,13 +1,9 @@
-server:
-  port: 7685
 spring:
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: test
-    hikari:
-      jdbc-url: jdbc:mysql://localhost:3306/chncylDb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     url: jdbc:mysql://localhost:3306/chncylDb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     hikari:
       minimum-idle: 10
@@ -74,8 +70,8 @@ knife4j:
   production: false
   #是否启用登录认证
   basic:
-    enable: false
-    username: chncyl
+    enable: true
+    username: admin
     password: 123456
   setting:
     language: zh_cn
@@ -84,10 +80,4 @@ knife4j:
     swagger-model-name: 用户模块
 # 弱密码检测配置
 weak-password-check:
-  enable: false
-# 安全验证配置
-security:
-  # token加密密钥
-  secret-key-256: a
-  # token过期时间
-  expire-seconds: 3600
+  enable: true

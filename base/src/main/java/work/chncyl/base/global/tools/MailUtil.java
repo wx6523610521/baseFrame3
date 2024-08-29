@@ -2,10 +2,13 @@ package work.chncyl.base.global.tools;
 
 import cn.hutool.extra.template.TemplateEngine;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -60,14 +63,18 @@ public class MailUtil implements CommandLineRunner {
     public static void sendCommonMail(String toMailAddr, String subject, String message) throws MessagingException, UnsupportedEncodingException {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
+
         javaMailSender.setDefaultEncoding("utf-8");
 
         javaMailSender.setHost("smtp.qq.com");              // 设置邮箱服务器
         javaMailSender.setPort(465);                        // 设置端口
-        javaMailSender.setUsername("123456789@qq.com");    // 设置用户名
+        javaMailSender.setUsername("747692844@qq.com");    // 设置用户名
         javaMailSender.setPassword("<你的密码/授权码>");      // 设置密码（记得替换为你实际的密码、授权码）
         javaMailSender.setProtocol("smtps");                // 设置协议
-        /*
+
+
+/*
+
         javaMailSender.setJavaMailProperties(mailProperties.getProperties()); // 设置配置项
 
         // 创建一个邮件消息
@@ -84,8 +91,11 @@ public class MailUtil implements CommandLineRunner {
         helper.setSubject("Hello");
         // 邮件正文，第二个参数表示是否是HTML正文
         helper.setText("Hello <strong> World</strong>！", true);
+
+
         // 发送
         javaMailSender.send(message);*/
+
     }
 
     public static String getHost(String email) throws Exception {
@@ -119,6 +129,6 @@ public class MailUtil implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println(mailProperties);
+        System.out.println("\n\n\n" + mailProperties + "\n\n\n");
     }
 }

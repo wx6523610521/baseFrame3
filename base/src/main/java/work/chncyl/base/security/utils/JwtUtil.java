@@ -6,9 +6,7 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import work.chncyl.base.global.tools.RedisUtils;
 import work.chncyl.base.security.entity.LoginUserDetail;
@@ -18,43 +16,19 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * JWT工具类
- */
 @Component
 public class JwtUtil {
-    /**
-     * 加密密钥
-     */
-    @Value("${security.secret-key-256:http://www.chncyl.work/QkJN59yMC}")
-    private String secretKey;
-    /**
-     * 过期时间（秒）,最少60s
-     */
-    @Value("${security.expire-seconds:60}")
-    public int expireTime;
-    /**
-     * token是否允许挪用
-     */
-    @Value("${security.can-redeployed:true}")
-    public boolean canRedeployed;
+    private static final String SECRET_KEY = "94F371BE6C40G8CEC923942668G606740FGG674247BE65308C09E228E68D3EEB";
 
-    private static SecretKey KEY;
-
-    private static Integer EXPIRE_TIME;
+    public static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     private static final SecureDigestAlgorithm<SecretKey, SecretKey> ALGORITHM = Jwts.SIG.HS256;
+    /**
+     * 过期时间 （秒）
+     */
+    public static int EXPIRE_TIME = 12 * 60 * 60;
 
     private static final String JWT_ISS = "chncyl";
-
-    @PostConstruct
-    public void init() {
-        if (secretKey.getBytes().length < 32) {
-            secretKey = "http://www.chncyl.work/QkJN59yMC";
-        }
-        KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
-        EXPIRE_TIME = (Math.max(expireTime, 60));
-    }
 
     public static String genToken(LoginUserDetail details) {
         String uuid = UUID.randomUUID().toString();
@@ -114,9 +88,6 @@ public class JwtUtil {
         return jwt;
     }
 
-    /**
-     * 使token失效
-     */
     public static void lapsedToken() {
 
     }

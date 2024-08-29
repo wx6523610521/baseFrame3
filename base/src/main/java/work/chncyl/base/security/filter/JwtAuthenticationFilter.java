@@ -2,21 +2,22 @@ package work.chncyl.base.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import work.chncyl.base.global.handler.FilterExceptionHandler;
 import work.chncyl.base.security.entity.LoginUserDetail;
 import work.chncyl.base.security.utils.JwtUtil;
 
 import java.io.IOException;
 
-/**
- * jwt验证过滤器
- */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
@@ -31,11 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         try {
-            if (this.jwtUtil.isTokenEffective(jwt)) {
+            if (this.jwtUtil.isTokenEffective(jwt).booleanValue()) {
                 LoginUserDetail userDetails = this.jwtUtil.getUserDetails(jwt);
-                // 额外的验证，可以从redis独立控制
-                Boolean isTokenValid = Boolean.TRUE;
-                if (userDetails != null && isTokenValid) {
+                Boolean isTokenValid = Boolean.valueOf(true);
+                if (userDetails != null && isTokenValid.booleanValue()) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails((new WebAuthenticationDetailsSource())
                             .buildDetails(request));
@@ -43,8 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // FilterExceptionHandler.handler(request, response, e);
-            filterChain.doFilter(request, response);
+            FilterExceptionHandler.handler(request, response, e);
             return;
         }
         filterChain.doFilter(request, response);
