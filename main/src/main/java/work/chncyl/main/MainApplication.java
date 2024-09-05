@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"work.chncyl"})
 @MapperScan("work.chncyl.**.mapper")
 @Slf4j
 public class MainApplication {
