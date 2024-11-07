@@ -80,4 +80,10 @@ knife4j:
     swagger-model-name: 用户模块
 # 弱密码检测配置
 weak-password-check:
-  enable: true
+  enable: false
+# 安全验证配置
+security:
+  # token加密密钥
+  secret-key-256: a
+  # token过期时间
+  expire-seconds: 3600
