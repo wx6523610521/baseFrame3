@@ -61,7 +61,6 @@ public class RedisUtils implements CommandLineRunner {
         redisTemplate.expire(key, time, TimeUnit.SECONDS);
     }
 
-
     public static Boolean delete(String key) {
         return redisTemplate.delete(key);
     }
@@ -93,8 +92,8 @@ public class RedisUtils implements CommandLineRunner {
         /**
          * 批量判断value是否为key的成员
          */
-        public static <T> Map<T, Boolean> isMember(String key, T... value) {
-            return (Map<T, Boolean>) redisTemplate.opsForSet().isMember(key, value);
+        public static Map<Object, Boolean> isMember(String key, Object... value) {
+            return redisTemplate.opsForSet().isMember(key, value);
         }
 
         /**
@@ -161,7 +160,6 @@ public class RedisUtils implements CommandLineRunner {
             return redisTemplate.opsForSet().distinctRandomMembers(key, num);
         }
     }
-
 
     /**
      * ============================================== zset ==========================================================
@@ -579,7 +577,6 @@ public class RedisUtils implements CommandLineRunner {
         }
     }
 
-
     /**
      * ============================================== Redis锁 ==========================================================
      */
@@ -601,7 +598,6 @@ public class RedisUtils implements CommandLineRunner {
             return RELEASE_SUCCESS.equals(execute);
         }
     }
-
 
     public void run(String... args) {
         redisTemplate = (RedisTemplate<String, Object>) SpringUtils.getBean("ObjectRedisTemplate", RedisTemplate.class);

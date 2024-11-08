@@ -23,7 +23,6 @@ public class CustomRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         if (allowAll || allowPath.contains(request.getServletPath())) {
             request = new CustomHttpServletRequestWrapper(request);
         }
