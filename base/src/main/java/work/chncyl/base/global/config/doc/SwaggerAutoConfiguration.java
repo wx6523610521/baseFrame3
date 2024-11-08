@@ -31,7 +31,7 @@ public class SwaggerAutoConfiguration {
         OpenAPI openApi = new OpenAPI();
         openApi.setInfo(getInfo());
         openApi.setExternalDocs(externalDocumentation());
-        securitySchemes(openApi);
+//        securitySchemes(openApi);
         return openApi;
     }
 

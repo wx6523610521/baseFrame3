@@ -1,7 +1,6 @@
 package work.chncyl.base.security.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,10 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
+import work.chncyl.base.global.tools.requestTool.filter.CustomRequestFilter;
 import work.chncyl.base.security.SecurityHandlerConfig;
 import work.chncyl.base.security.annotation.AnonymousAccess;
 import work.chncyl.base.security.filter.CustomUsernamePasswordAuthenticationFilter;
@@ -41,8 +42,10 @@ import java.util.Set;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
-    @Value("${loginUrl}")
-    private String loginUrl;
+    /**
+     * 登录接口地址
+     */
+    public static String loginUrl = "/TokenAuth/login";
 
     private final RequestMappingHandlerMapping handlerMapping;
 
@@ -52,9 +55,12 @@ public class SpringSecurityConfig {
 
     private final CheckPwdUtils checkPwdUtils;
 
-    private static final String[] ANONYMOUS_URL = new String[]{};
-    private static final String[] GET_ANONYMOUS_URL = new String[]{
-            "/",
+    private final AuthenticationConfiguration authenticationConfiguration;
+
+    /**
+     * 匿名接口
+     */
+    private static final String[] ANONYMOUS_URL = new String[]{"/",
             "/swagger-ui.html",
             "/swagger-ui/",
             "/doc.html",
@@ -67,6 +73,13 @@ public class SpringSecurityConfig {
             "/springdoc/**",
             "/v3/**",
             "/web/login"};
+    /**
+     * 限制为GET请求的匿名接口
+     */
+    private static final String[] GET_ANONYMOUS_URL = new String[]{};
+    /**
+     * 限制为POST请求的匿名接口
+     */
     private static final String[] POST_ANONYMOUS_URL = new String[]{};
 
     private JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -83,30 +96,44 @@ public class SpringSecurityConfig {
                         // 指定的匿名接口
                         .requestMatchers(ANONYMOUS_URL)
                         .permitAll()
-                        //接口文档、静态资源
+                        // 限制get请求匿名接口
                         .requestMatchers(HttpMethod.GET, GET_ANONYMOUS_URL)
                         .permitAll()
+                        // 限制post请求匿名接口
                         .requestMatchers(HttpMethod.POST, POST_ANONYMOUS_URL)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
                 // 配置session管理器，设置session为无状态，此时对登录成功的用户不会创建Session
                 .sessionManagement(sessionManage -> sessionManage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 登出配置
                 .logout(out -> out.addLogoutHandler(SecurityHandlerConfig.logoutHandler())
                         .logoutUrl("/api/v1/auth/logout")
                         .logoutSuccessHandler(SecurityHandlerConfig.logoutSuccessHandler()))
                 // 配置登录信息
-                .formLogin(login -> (login.loginProcessingUrl("/TokenAuth/Sigin")
+                .formLogin(login -> login.loginProcessingUrl(loginUrl)
                         .passwordParameter("password")
                         .usernameParameter("userName")
-                        .successHandler(SecurityHandlerConfig.loginSuccessHandler()))
-                        .loginPage(this.loginUrl))
+                        .successHandler(SecurityHandlerConfig.loginSuccessHandler())
+                )
+                // 配置认证管理器
                 .authenticationProvider(authenticationProvider())
+                .addFilterAt(new CustomUsernamePasswordAuthenticationFilter(loginUrl,authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                // 增加jwt验证过滤器
                 .addFilterBefore(jwtAuthenticationFilter(), CustomUsernamePasswordAuthenticationFilter.class)
+                /*
+                    增加自封装请求过滤器，实现请求体的多次读取
+                    当前仅限制登录请求允许多次读取，不允许其他请求允许多次读取，可在CustomRequestFilter内配置
+                 */
+                .addFilterBefore(new CustomRequestFilter(), CustomUsernamePasswordAuthenticationFilter.class)
+                // 增加验证码验证过滤器
                 .addFilterBefore(new VerifyCodeFilter(), CustomUsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+    /**
+     * 获取AnonymousAccess注解标注的匿名接口
+     */
     private String[] getAnonymousUrls() {
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping.getHandlerMethods();
         Set<String> allAnonymousAccess = new HashSet<>();

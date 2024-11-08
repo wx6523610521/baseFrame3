@@ -31,6 +31,7 @@ public class MainApplication {
                 protocol = "https";
             }
             String serverPort = env.getProperty("server.port");
+            serverPort = serverPort == null ? "8080" : serverPort;
             String contextPath = env.getProperty("server.servlet.context-path");
             if (StringUtils.isBlank(contextPath)) {
                 contextPath = "/doc.html";
@@ -49,7 +50,7 @@ public class MainApplication {
                             \t接口文档访问 URL:
                             \t本地: \t{}://localhost:{}{}
                             \t外部: \t{}://{}:{}{}
-                            \t配置文件: \t{}
+                            \t配置文件环境: \t{}
                             ----------------------------------------------------------""",
                     env.getProperty("spring.application.name"),
                     protocol,

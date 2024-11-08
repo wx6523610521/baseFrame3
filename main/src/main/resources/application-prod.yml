@@ -43,6 +43,7 @@ spring:
       mail.smtp.socketFactory.fallback: false
 # swagger配置
 swagger:
+  # 关闭接口文档
   enabled: false
   title: 基础项目
   author: chncyl

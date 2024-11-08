@@ -8,11 +8,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import work.chncyl.base.global.tools.AuthenticateUtil;
-import work.chncyl.base.global.tools.RedisUtils;
 import work.chncyl.base.security.entity.LoginUserDetail;
 import work.chncyl.base.security.utils.CheckPwdUtils;
-
-import java.util.UUID;
 
 /**
  * 客户端登录处理
@@ -25,6 +22,9 @@ public class ClientLoginAuthProvider extends DaoAuthenticationProvider {
         this.checkPwdUtils = checkPwdUtils;
     }
 
+    /**
+     * 额外身份验证
+     */
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         if (authentication.getCredentials() == null) {
             this.logger.debug("Failed to authenticate since no credentials provided");
@@ -38,11 +38,15 @@ public class ClientLoginAuthProvider extends DaoAuthenticationProvider {
             throw new BadCredentialsException(this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
+        // 获取到自定义封装的token
         CustomUsernamePasswordAuthenticationToken auth = (CustomUsernamePasswordAuthenticationToken) authentication;
-        String pwd = AuthenticateUtil.decrypt(auth.getEncodeStr());
-        if (!this.checkPwdUtils.EvalPWD(pwd)) {
+        // 获取到登录认证的额外信息
+        String str = AuthenticateUtil.decrypt(auth.getEncodeStr());
+        System.out.println(str);
+        // 密码复杂度校验
+        /*if (!this.checkPwdUtils.EvalPWD(str)) {
             String s = UUID.randomUUID().toString().replaceAll("-", "");
             RedisUtils.set(s, ud.getUserId(), Integer.valueOf(1800));
-        }
+        }*/
     }
 }

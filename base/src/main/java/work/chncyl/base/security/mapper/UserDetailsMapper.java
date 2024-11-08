@@ -13,7 +13,7 @@ public interface UserDetailsMapper {
 
     List<LoginAuthorityInfo> getUserAuthorityInfo(@Param("userId") String paramString);
 
-    List<LoginManageOrgan> getUserManageOrgan(@Param("userId") String paramString);
+    List<LoginManageOrgan> getUserManageOrganization(@Param("userId") String paramString);
 
     List<LoginMenuButtonInfo> getRoleMenuButtonInfo(@Param("roleId") String paramString);
 }

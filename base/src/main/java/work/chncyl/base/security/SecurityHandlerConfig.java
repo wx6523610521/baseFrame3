@@ -13,6 +13,9 @@ import work.chncyl.base.security.utils.JwtUtil;
 
 import java.io.PrintWriter;
 
+/**
+ * 安全处理器配置类
+ */
 @Configuration
 public class SecurityHandlerConfig {
     /**
@@ -39,9 +42,7 @@ public class SecurityHandlerConfig {
      * 登出处理器
      */
     public static LogoutHandler logoutHandler() {
-        return (request, response, authentication) -> {
-            JwtUtil.lapsedToken();
-        };
+        return (request, response, authentication) -> JwtUtil.lapsedToken();
     }
 
     /**

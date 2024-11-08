@@ -11,6 +11,9 @@ import work.chncyl.base.security.mapper.UserDetailsMapper;
 
 import java.util.Collections;
 
+/**
+ * 用户验证服务
+ */
 @Service
 public class BaseUserDetailsService implements UserDetailsService {
     private final UserDetailsMapper detailsMapper;
@@ -20,15 +23,17 @@ public class BaseUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        LoginUserDetail abpusers;
+        LoginUserDetail userDetail;
+        // 兼容手机号和用户名登录
         if (RegexUtils.isMobileNum(username)) {
-            abpusers = this.detailsMapper.getUserDetail(null, username);
+            userDetail = this.detailsMapper.getUserDetail(null, username);
         } else {
-            abpusers = this.detailsMapper.getUserDetail(username, null);
+            userDetail = this.detailsMapper.getUserDetail(username, null);
         }
-        if (abpusers == null)
+        if (userDetail == null)
             throw new UsernameNotFoundException("");
-        abpusers.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_Signed")));
-        return abpusers;
+        // 配置用户的 角色/权限，SpringSecurity将角色和权限统一管理，区别是角色以ROLE_开头，权限则无要求
+        userDetail.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_Signed")));
+        return userDetail;
     }
 }
