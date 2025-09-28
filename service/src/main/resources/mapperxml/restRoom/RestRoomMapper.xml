@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="work.chncyl.service.restRoom.mapper.RestRoomMapper">
+  <resultMap id="BaseResultMap" type="work.chncyl.service.restRoom.entity.RestRoom">
+    <!--@mbg.generated-->
+    <!--@Table rest_room-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="CreateUserId" jdbcType="INTEGER" property="createUserId" />
+    <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UpdateUserId" jdbcType="INTEGER" property="updateUserId" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="Deleted" jdbcType="BOOLEAN" property="deleted" />
+    <result column="DeletedTime" jdbcType="TIMESTAMP" property="deletedTime" />
+    <result column="DeletedUserId" jdbcType="INTEGER" property="deletedUserId" />
+    <result column="Name" jdbcType="VARCHAR" property="name" />
+    <result column="QRCode" jdbcType="VARCHAR" property="qRCode" />
+    <result column="State" jdbcType="TINYINT" property="state" />
+    <result column="Longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="Latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="Restrictions" jdbcType="BOOLEAN" property="restrictions" />
+    <result column="Distance" jdbcType="INTEGER" property="distance" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, CreateUserId, CreateTime, UpdateUserId, UpdateTime, Deleted, DeletedTime, DeletedUserId, 
+    `Name`, QRCode, `State`, Longitude, Latitude, Restrictions, Distance, Remark
+  </sql>
+
+    <select id="queryRestRoom" resultMap="BaseResultMap">
+        SELECT *
+        FROM rest_room
+        WHERE Deleted = false
+        <if test="queryInfo.name != null">
+            AND name LIKE CONCAT('%' #{queryInfo.name} '%')
+        </if>
+        <if test="queryInfo.hasQRCode != null">
+            <choose>
+                <when test="queryInfo.hasQRCode">
+                    AND QRCode IS NOT NULL
+                    AND QRCode != ''
+                </when>
+                <when test="!queryInfo.hasQRCode">
+                    AND (QRCode IS NULL OR QRCode = '')
+                </when>
+            </choose>
+        </if>
+        <if test="queryInfo.state != null">
+            AND `State` = #{queryInfo.state}
+        </if>
+        <if test="queryInfo.restrictions != null">
+            AND Restrictions = #{queryInfo.restrictions}
+        </if>
+    </select>
+</mapper>

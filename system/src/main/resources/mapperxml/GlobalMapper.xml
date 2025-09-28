@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="work.chncyl.base.global.service.mapper.GlobalMapper">
+    <select id="searchDictionarys" resultType="work.chncyl.base.global.service.dto.Dictionary">
+        SELECT *
+        FROM sys_dictionary
+        <where>
+            <if test="info.id != null and info.id != ''">
+                and Id = #{info.id}
+            </if>
+            <if test="info.type != null and info.type != ''">
+                and Type = #{info.type}
+            </if>
+            <if test="info.code != null and info.code != ''">
+                and Code = #{info.code}
+            </if>
+            <if test="info.upId != null and info.upId != ''">
+                and upId = #{info.upId}
+            </if>
+            <if test="info.name != null and info.name != ''">
+                and Name like concat('%', #{info.name}, '%')
+            </if>
+        </where>
+        ORDER BY Type, Level
+    </select>
+
+    <select id="getDefaultRole" resultType="work.chncyl.base.global.security.entity.RoleInfo">
+        SELECT *
+        FROM sys_role
+        WHERE IsDeleted = false
+          AND IsDefault = true
+    </select>
+</mapper>
