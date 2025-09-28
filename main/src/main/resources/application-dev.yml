@@ -70,7 +70,7 @@ knife4j:
   production: false
   #是否启用登录认证
   basic:
-    enable: true
+    enable: false
     username: chncyl
     password: 123456
   setting:

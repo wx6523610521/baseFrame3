@@ -60,19 +60,25 @@ public class SpringSecurityConfig {
     /**
      * 匿名接口
      */
-    private static final String[] ANONYMOUS_URL = new String[]{"/",
+    private static final String[] ANONYMOUS_URL = new String[]{
+            "/",
+            // Swagger基础路径
             "/swagger-ui.html",
-            "/swagger-ui/",
-            "/doc.html",
+            "/swagger-ui/ **",          // Swagger UI 3.x资源
+            "/doc.html",               // Knife4j文档页
+            "/knife4j/ **",             // Knife4j静态资源
             "/favicon.ico",
-            "/webjars/**",
-            "/**.html",
-            "/**.css",
-            "/**.js",
-            "/swagger-resources/**",
+            "/webjars/ **",             // WebJars资源（含Swagger UI依赖）
+            "/**.html", "/**.css", "/**.js",
+            // OpenAPI文档数据
+            "/swagger-resources/ **",
             "/springdoc/**",
             "/v3/**",
-            "/web/login"};
+            "/v3/api-docs/**",
+            "/swagger-ui/**",// API文档JSON
+            "/webjars/**",// API文档JSON
+            "/web/login"
+    };
     /**
      * 限制为GET请求的匿名接口
      */
