@@ -1,0 +1,91 @@
+server:
+  port: 7685
+spring:
+  # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: test
+    url: jdbc:mysql://localhost:3306/chncylDb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    hikari:
+      minimum-idle: 10
+      idle-timeout: 30000
+      maximum-pool-size: 20
+      max-lifetime: 120000
+      connection-timeout: 30000
+  data:
+    redis:
+      database: 0
+      host: 192.168.101.186
+      port: 6379
+      password:
+      timeout: 2000
+      connectTimeout: 1000
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          min-idle: 1
+          max-wait: -1ms
+  # 邮箱配置，需要开启POP3/SMTP，部分邮箱需设置允许低安全性应用使用
+  mail:
+    # 163
+    host: smtp.163.com
+    port:
+    username: chncyl@163.com
+    # 密码应为邮箱的授权密码
+    password: abc
+    protocol: smtp
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
+# swagger配置
+swagger:
+  enabled: true
+  title: 基础项目
+  author: chncyl
+  version: 1.0
+# 文档配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  # 分组配置
+#  group-configs:
+#    - group: 'chncyl'
+#      paths-to-match: '/**'
+#      #生成文档所需的扫包路径，一般为启动类目录
+#      packages-to-scan: work.chncyl
+#knife4j配置
+knife4j:
+  #是否启用增强设置
+  enable: ${swagger.enabled}
+  #开启生产环境屏蔽
+  production: false
+  #是否启用登录认证
+  basic:
+    enable: false
+    username: chncyl
+    password: 123456
+  setting:
+    language: zh_cn
+    enable-version: true
+    enable-swagger-models: true
+    swagger-model-name: 用户模块
+# 弱密码检测配置
+weak-password-check:
+  enable: false
+# 安全验证配置
+security:
+  # token加密密钥
+  secret-key-256: a
+  # token过期时间
+  expire-seconds: 3600
