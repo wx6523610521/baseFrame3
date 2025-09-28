@@ -1,9 +1,10 @@
 package work.chncyl.base.global.enums;
 
-import org.springframework.stereotype.Component;
-
-@Component
+/**
+ * 枚举超类
+ */
 public interface EnumMessage {
     Integer getValue();
+
     String getMessage();
 }
