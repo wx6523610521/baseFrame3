@@ -4,19 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * 正则工具
+ * @author chncyl
  */
 public class RegexUtils {
-
-    /**
-     * 用户名是否符合规范（^[\u4E00-\u9FA5A-Za-z0-9_]+$）
-     */
-    public static boolean isValidUsername(String username) {
-        if (StringUtils.isBlank(username)) {
-            return false;
-        }
-
-        return username.matches("^[\u4E00-\u9FA5A-Za-z0-9_]{3,10}$");
-    }
 
     /**
      * URL是否规范（^((http|ftp|https)://)(([a-zA-Z0-9\\._-]+\\.[a-zA-Z]{2,6})|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\\&amp;%_\\./-~-]*)?$）
@@ -162,5 +152,13 @@ public class RegexUtils {
             return false;
         }
         return qq.matches("^[1-9][0-9]{4,11}?$");
+    }
+
+
+    public static String fuzzyPhone(String phone) {
+        if (phone == null || phone.length() != 11) {
+            return phone;
+        }
+        return phone.replaceAll("^(\\w{3})\\w+(\\w{4})$", "$1****$2");
     }
 }

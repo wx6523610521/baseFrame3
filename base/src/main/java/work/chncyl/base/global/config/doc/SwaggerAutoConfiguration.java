@@ -18,6 +18,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import work.chncyl.base.global.annotation.CurrentUser;
 
 /**
  * 接口文档配置
@@ -41,6 +42,7 @@ public class SwaggerAutoConfiguration {
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .ignoredParameterTypes(CurrentUser.class)
                 .select()
                 // 扫描指定包中的注解
                 .apis(RequestHandlerSelectors.basePackage("work.chncyl"))

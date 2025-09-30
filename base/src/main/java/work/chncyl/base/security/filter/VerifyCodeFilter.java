@@ -27,7 +27,7 @@ public class VerifyCodeFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
         if ("POST".equalsIgnoreCase(request.getMethod()) && defaultFilterProcessUrl.equals(request.getServletPath())) {
-            UserDetails details = SessionUtils.getLoginUser();
+            UserDetails details = SessionUtils.getLoginUserDetail();
             if (details != null) {
                 chain.doFilter(req, res);
                 return;

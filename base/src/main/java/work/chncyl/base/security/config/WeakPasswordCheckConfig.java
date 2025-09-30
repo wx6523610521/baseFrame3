@@ -88,7 +88,7 @@ public class WeakPasswordCheckConfig {
     /**
      * 允许的特殊符号集合
      */
-    public String SPECIAL_CHAR_SET = "!\"//$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    public static String SPECIAL_CHAR_SET = "!\"//$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
     public static final String[] KEYBOARD_HORIZONTAL_ARR = new String[]{"01234567890", "qwertyuiop", "asdfghjkl", "zxcvbnm"};
 

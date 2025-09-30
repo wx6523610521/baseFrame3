@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ApiResult<Object> exceptionHandler(Exception e) {
+        e.printStackTrace();
         System.out.println("" + e);
         return ApiResult.error500(e.getMessage());
     }

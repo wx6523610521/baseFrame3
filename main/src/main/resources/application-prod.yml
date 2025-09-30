@@ -10,20 +10,19 @@ spring:
       maximum-pool-size: 20
       max-lifetime: 120000
       connection-timeout: 30000
-  data:
-    redis:
-      database: 0
-      host: localhost
-      port: 6379
-      password:
-      timeout: 2000
-      connectTimeout: 1000
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          min-idle: 1
-          max-wait: -1ms
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    timeout: 2000
+    connectTimeout: 1000
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        min-idle: 1
+        max-wait: -1ms
   # 邮箱配置，需要开启POP3/SMTP，部分邮箱需设置允许低安全性应用使用
   mail:
     # 163
@@ -48,20 +47,6 @@ swagger:
   title: 基础项目
   author: chncyl
   version: 1.0
-# 文档配置
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-  api-docs:
-    path: /v3/api-docs
-  # 分组配置
-#  group-configs:
-#    - group: 'chncyl'
-#      paths-to-match: '/**'
-#      #生成文档所需的扫包路径，一般为启动类目录
-#      packages-to-scan: work.chncyl
 #knife4j配置
 knife4j:
   #是否启用增强设置

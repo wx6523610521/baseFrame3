@@ -65,8 +65,8 @@ public class RedisUtils implements CommandLineRunner {
         return redisTemplate.delete(key);
     }
 
-    public static Long deleteObject(Collection<String> collection) {
-        return redisTemplate.delete(collection);
+    public static Long deleteObject(Collection<String> keys) {
+        return redisTemplate.delete(keys);
     }
 
     /**

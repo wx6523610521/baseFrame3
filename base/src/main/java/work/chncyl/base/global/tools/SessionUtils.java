@@ -1,34 +1,15 @@
 package work.chncyl.base.global.tools;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import work.chncyl.base.security.entity.LoginUserDetail;
 
-import java.util.ArrayList;
-
-/**
- * session工具
- */
 public class SessionUtils {
-    public static UserDetails getSession() {
-        if (SecurityContextHolder.getContext() == null ||
-                SecurityContextHolder.getContext().getAuthentication() == null)
-            return null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            String i = (String) principal;
-            if (i.equalsIgnoreCase("anonymousUser"))
-                return new User("anonymousUser", null, new ArrayList<>());
+    public static LoginUserDetail getLoginUserDetail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof LoginUserDetail) {
+            return (LoginUserDetail) authentication.getPrincipal();
         }
-        assert principal instanceof UserDetails;
-        return (UserDetails) principal;
-    }
-
-    public static UserDetails getLoginUser() {
-        return getSession();
-    }
-
-    public static UserDetails getUser() {
-        return getSession();
+        return null;
     }
 }

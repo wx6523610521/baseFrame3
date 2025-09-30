@@ -13,20 +13,19 @@ spring:
       maximum-pool-size: 20
       max-lifetime: 120000
       connection-timeout: 30000
-  data:
-    redis:
-      database: 0
-      host: 192.168.101.186
-      port: 6379
-      password:
-      timeout: 2000
-      connectTimeout: 1000
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          min-idle: 1
-          max-wait: -1ms
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    timeout: 2000
+    connectTimeout: 1000
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        min-idle: 1
+        max-wait: -1ms
   # 邮箱配置，需要开启POP3/SMTP，部分邮箱需设置允许低安全性应用使用
   mail:
     # 163
