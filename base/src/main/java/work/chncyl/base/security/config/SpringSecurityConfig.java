@@ -96,6 +96,8 @@ public class SpringSecurityConfig {
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                // 禁用httpBasic,阻止401带WWW‑Authenticate响应头
+                .httpBasic().disable()
                 .authorizeHttpRequests(authz -> authz
                         // 有AnonymousAccess注解的接口
                         .antMatchers(getAnonymousUrls())
