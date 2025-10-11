@@ -20,6 +20,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
+import work.chncyl.base.global.filter.DisabledInterfaceFilter;
 import work.chncyl.base.global.tools.requestTool.filter.CustomRequestFilter;
 import work.chncyl.base.security.SecurityHandlerConfig;
 import work.chncyl.base.security.annotation.AnonymousAccess;
@@ -128,6 +129,7 @@ public class SpringSecurityConfig {
                 // 配置认证管理器
                 .authenticationProvider(authenticationProvider())
                 .addFilterAt(new CustomUsernamePasswordAuthenticationFilter(loginUrl, authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new DisabledInterfaceFilter(handlerMapping), CustomUsernamePasswordAuthenticationFilter.class)
                 // 增加jwt验证过滤器
                 .addFilterBefore(jwtAuthenticationFilter(), CustomUsernamePasswordAuthenticationFilter.class)
                 /**
