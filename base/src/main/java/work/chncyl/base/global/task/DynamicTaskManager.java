@@ -57,7 +57,7 @@ public class DynamicTaskManager implements SchedulingConfigurer {
                     runnable,
                     triggerContext -> {
                         CronTrigger trigger = new CronTrigger(task.getCronExpression());
-                        return trigger.nextExecutionTime(triggerContext);
+                        return trigger.nextExecution(triggerContext);
                     }
             );
 

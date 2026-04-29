@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import work.chncyl.base.global.result.ApiResult;
 import work.chncyl.base.global.task.SpringScheduledTask;
 import work.chncyl.base.global.task.service.inter.ISpringScheduledTaskService;
+import work.chncyl.base.global.tools.result.ApiResult;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.addTask(task);
             if (result) {
-                return ApiResult.success("添加定时任务成功");
+                return ApiResult.OK("添加定时任务成功");
             } else {
                 return ApiResult.error500("添加定时任务失败");
             }
@@ -55,7 +55,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.updateTask(task);
             if (result) {
-                return ApiResult.success("更新定时任务成功");
+                return ApiResult.OK("更新定时任务成功");
             } else {
                 return ApiResult.error500("更新定时任务失败");
             }
@@ -75,7 +75,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.deleteTask(id);
             if (result) {
-                return ApiResult.success("删除定时任务成功");
+                return ApiResult.OK("删除定时任务成功");
             } else {
                 return ApiResult.error500("删除定时任务失败");
             }
@@ -95,7 +95,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.deleteTaskByName(taskName);
             if (result) {
-                return ApiResult.success("删除定时任务成功");
+                return ApiResult.OK("删除定时任务成功");
             } else {
                 return ApiResult.error500("删除定时任务失败");
             }
@@ -115,7 +115,7 @@ public class SpringScheduledTaskController {
         try {
             SpringScheduledTask task = springScheduledTaskService.getTaskById(id);
             if (task != null) {
-                return ApiResult.success(task);
+                return ApiResult.OK(task);
             } else {
                 return ApiResult.error500("未找到对应的定时任务");
             }
@@ -135,7 +135,7 @@ public class SpringScheduledTaskController {
         try {
             SpringScheduledTask task = springScheduledTaskService.getTaskByName(taskName);
             if (task != null) {
-                return ApiResult.success(task);
+                return ApiResult.OK(task);
             } else {
                 return ApiResult.error500("未找到对应的定时任务");
             }
@@ -153,7 +153,7 @@ public class SpringScheduledTaskController {
     public ApiResult<List<SpringScheduledTask>> list() {
         try {
             List<SpringScheduledTask> tasks = springScheduledTaskService.getAllTasks();
-            return ApiResult.success(tasks);
+            return ApiResult.OK(tasks);
         } catch (Exception e) {
             log.error("获取定时任务列表失败", e);
             return ApiResult.error500("获取定时任务列表失败: " + e.getMessage());
@@ -169,7 +169,7 @@ public class SpringScheduledTaskController {
     public ApiResult<List<SpringScheduledTask>> listByStatus(@RequestParam(name = "status") Integer status) {
         try {
             List<SpringScheduledTask> tasks = springScheduledTaskService.getTasksByStatus(status);
-            return ApiResult.success(tasks);
+            return ApiResult.OK(tasks);
         } catch (Exception e) {
             log.error("根据状态查询定时任务失败", e);
             return ApiResult.error500("根据状态查询定时任务失败: " + e.getMessage());
@@ -186,7 +186,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.startTask(id);
             if (result) {
-                return ApiResult.success("启动定时任务成功");
+                return ApiResult.OK("启动定时任务成功");
             } else {
                 return ApiResult.error500("启动定时任务失败");
             }
@@ -206,7 +206,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.stopTask(id);
             if (result) {
-                return ApiResult.success("停止定时任务成功");
+                return ApiResult.OK("停止定时任务成功");
             } else {
                 return ApiResult.error500("停止定时任务失败");
             }
@@ -226,7 +226,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.executeTask(id);
             if (result) {
-                return ApiResult.success("立即执行定时任务成功");
+                return ApiResult.OK("立即执行定时任务成功");
             } else {
                 return ApiResult.error500("立即执行定时任务失败");
             }
@@ -248,7 +248,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.updateTaskCron(id, cronExpression);
             if (result) {
-                return ApiResult.success("更新任务调度时间成功");
+                return ApiResult.OK("更新任务调度时间成功");
             } else {
                 return ApiResult.error500("更新任务调度时间失败");
             }
@@ -274,7 +274,7 @@ public class SpringScheduledTaskController {
         try {
             boolean result = springScheduledTaskService.updateTaskMethod(id, taskClass, taskMethod, taskParameter);
             if (result) {
-                return ApiResult.success("更新任务执行方法成功");
+                return ApiResult.OK("更新任务执行方法成功");
             } else {
                 return ApiResult.error500("更新任务执行方法失败");
             }
