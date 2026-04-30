@@ -42,6 +42,31 @@ spring:
       mail.smtp.socketFactory.port: 465
       mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
       mail.smtp.socketFactory.fallback: false
+mybatis-plus:
+  mapper-locations:
+    - classpath*:/mapperxml/**/*.xml
+    - classpath*:work/chncyl/**/mapper/xml/*Mapper.xml
+  # 配置自定义类型处理器
+  type-handlers-package: work.chncyl.base.global.typeHandler
+  global-config:
+    # 关闭MP自带的banner
+    banner: false
+    db-config:
+      # 默认数据库表下划线命名
+      table-underline: true
+      update-strategy: not_null
+      logic-delete-field: isDeleted  # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+      # postgres 字段为"" 列名格式化配置
+      column-format: '"%s"'
+  configuration:
+    # 这个配置会将执行的 sql 打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # 返回类型为 Map，显示 null 对应的字段
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true # 数据库下划线自动转驼峰
 # swagger配置
 swagger:
   enabled: true
