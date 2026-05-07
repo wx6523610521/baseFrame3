@@ -7,7 +7,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import work.chncyl.base.global.tools.AuthenticateUtil;
+import work.chncyl.base.global.tools.AuthenticateUtils;
 import work.chncyl.base.security.entity.LoginUserDetail;
 import work.chncyl.base.security.utils.CheckPwdUtils;
 
@@ -41,7 +41,7 @@ public class ClientLoginAuthProvider extends DaoAuthenticationProvider {
         // 获取到自定义封装的token
         CustomUsernamePasswordAuthenticationToken auth = (CustomUsernamePasswordAuthenticationToken) authentication;
         // 获取到登录认证的额外信息
-        String str = AuthenticateUtil.decrypt(auth.getEncodeStr());
+        String str = AuthenticateUtils.decrypt(auth.getEncodeStr());
         System.out.println(str);
         // 密码复杂度校验
         /*if (!this.checkPwdUtils.EvalPWD(str)) {

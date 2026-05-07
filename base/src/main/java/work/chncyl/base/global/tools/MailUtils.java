@@ -1,6 +1,5 @@
 package work.chncyl.base.global.tools;
 
-import cn.hutool.extra.template.TemplateEngine;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class MailUtil implements CommandLineRunner {
+public class MailUtils implements CommandLineRunner {
     private static final Map<String, String> hostMap = new HashMap<>();
 
     static {
@@ -41,11 +40,6 @@ public class MailUtil implements CommandLineRunner {
     }
 
     MailProperties mailProperties = new MailProperties();// 配置项
-
-    /**
-     * 用来发送模版邮件
-     */
-    private TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String from;

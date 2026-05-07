@@ -1,7 +1,7 @@
 package work.chncyl.base.security;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -28,7 +28,8 @@ public class SecurityHandlerConfig {
             response.setStatus(200);
             response.setContentType("application/json");
             PrintWriter writer = response.getWriter();
-            LoginSuccessVo vo = BeanUtil.copyProperties(userDetail, LoginSuccessVo.class);
+            LoginSuccessVo vo = new LoginSuccessVo();
+            BeanUtils.copyProperties(userDetail, vo);
             vo.setUserName(userDetail.getUsername());
             vo.setAccessToken(token);
             ApiResult<LoginSuccessVo> ok = ApiResult.OK(vo);

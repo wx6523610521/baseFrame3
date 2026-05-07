@@ -1,6 +1,5 @@
 package work.chncyl.base.global.tools.file;
 
-import cn.hutool.core.util.StrUtil;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.BaseFont;
@@ -24,6 +23,7 @@ import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -37,7 +37,7 @@ import java.nio.file.Paths;
 
 public class FileTypeConver {
     public static String fileToString(String filePath) {
-        if (StrUtil.isBlank(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             return null;
         }
         try {
@@ -217,7 +217,7 @@ public class FileTypeConver {
     }
 
     private static void guaranteeNewDocument(String filePath) {
-        if (StrUtil.isBlank(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             return;
         }
         File file = new File(filePath);
@@ -228,7 +228,7 @@ public class FileTypeConver {
     }
 
     private static void guaranteeDocumentExist(String filePath) {
-        if (StrUtil.isBlank(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             return;
         }
         File file = new File(filePath);

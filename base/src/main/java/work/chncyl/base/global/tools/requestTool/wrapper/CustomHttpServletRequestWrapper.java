@@ -1,6 +1,5 @@
 package work.chncyl.base.global.tools.requestTool.wrapper;
 
-import cn.hutool.core.io.IoUtil;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -20,7 +19,7 @@ public class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public CustomHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        requestBody = IoUtil.readBytes(request.getInputStream());
+        requestBody = request.getInputStream().readAllBytes();
     }
 
     @Override
