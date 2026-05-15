@@ -2,8 +2,11 @@ package work.chncyl.base.security.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import work.chncyl.base.global.tools.AuthenticateUtil;
 import work.chncyl.base.security.config.WeakPasswordCheckConfig;
+import work.chncyl.base.security.processor.CustomUsernamePasswordAuthenticationToken;
 
 import java.util.regex.Pattern;
 
@@ -15,6 +18,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CheckPwdUtils {
     private final WeakPasswordCheckConfig config;
+    private final AuthenticateUtil authenticateUtil;
 
     private static final String NUM_REGEX = "[0-9]+";
     private static final String LOWER_REGEX = "[a-z]+";
@@ -257,6 +261,23 @@ public class CheckPwdUtils {
             }
         }
         return flag;
+    }
+
+    public boolean safetyEvalPWDWithDecrypt(CustomUsernamePasswordAuthenticationToken token) {
+        if (!config.getEnable()) {
+            return true;
+        } else if (token == null || StringUtils.isBlank(token.getEncodeStr())) {
+            //无法校验密码复杂度
+            throw new RuntimeException("密码复杂度校验错误");
+        }
+        String encryptedPassword = token.getEncodeStr();
+        String pwd = encryptedPassword;
+        try {
+            pwd = authenticateUtil.decrypt(encryptedPassword);
+        } catch (Exception e) {
+            log.error("密码解密失败", e);
+        }
+        return EvalPWD(pwd);
     }
 
     /**

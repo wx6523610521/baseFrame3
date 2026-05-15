@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * 弱密码检查配置
  */
 @Configuration
-@ConfigurationProperties(prefix = "weak-password-check")
+@ConfigurationProperties(prefix = "security.weak-password-check")
 @Data
 public class WeakPasswordCheckConfig {
 

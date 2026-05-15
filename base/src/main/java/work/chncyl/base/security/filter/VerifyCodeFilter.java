@@ -20,34 +20,42 @@ import java.util.Map;
  * 验证码过滤器
  */
 public class VerifyCodeFilter extends GenericFilterBean {
-    String defaultFilterProcessUrl = SpringSecurityConfig.loginUrl;
 
+    @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        if ("POST".equalsIgnoreCase(request.getMethod()) && defaultFilterProcessUrl.equals(request.getServletPath())) {
-            UserDetails details = SessionUtils.getLoginUser();
-            if (details != null) {
-                chain.doFilter(req, res);
-                return;
-            }
-            // 验证码校验
-            ObjectMapper mapper = new ObjectMapper();
-            ServletInputStream servletInputStream = request.getInputStream();
-            Map<String, String> authenticationBean = (Map<String, String>) mapper.readValue(servletInputStream, Map.class);
-            String codeId = authenticationBean.get("codeId").trim();
-            String requestCaptcha = authenticationBean.get("code").trim();
 
-            if (StringUtils.isBlank(codeId) || StringUtils.isBlank(requestCaptcha)) {
-                FilterExceptionHandler.handler(req, res, new AuthenticationServiceException(""));
-                return;
-            }
-            String genCaptcha = RedisUtils.get(codeId);
-            if (!requestCaptcha.equalsIgnoreCase(genCaptcha)) {
-                FilterExceptionHandler.handler(req, res, new AuthenticationServiceException(""));
-                return;
-            }
+        if (!"POST".equalsIgnoreCase(request.getMethod())
+                || !SpringSecurityConfig.LOGIN_URL.equals(request.getServletPath())) {
+            chain.doFilter(req, res);
+            return;
         }
+
+        UserDetails details = SessionUtils.getLoginUser();
+        if (details != null) {
+            chain.doFilter(req, res);
+            return;
+        }
+
+        // 验证码校验
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> authenticationBean = (Map<String, String>) mapper.readValue(request.getInputStream(), Map.class);
+
+        String codeId = authenticationBean.get("codeId");
+        String requestCaptcha = authenticationBean.get("code");
+
+        if (StringUtils.isBlank(codeId) || StringUtils.isBlank(requestCaptcha)) {
+            FilterExceptionHandler.handler(req, res, new AuthenticationServiceException("验证码不能为空"));
+            return;
+        }
+
+        String genCaptcha = RedisUtils.get(codeId);
+        if (genCaptcha == null || !requestCaptcha.equalsIgnoreCase(genCaptcha)) {
+            FilterExceptionHandler.handler(req, res, new AuthenticationServiceException("验证码错误"));
+            return;
+        }
+
         chain.doFilter(request, response);
     }
 }

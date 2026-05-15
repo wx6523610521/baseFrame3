@@ -8,12 +8,11 @@ import java.util.List;
 public class LoginAuthorityInfo {
     private Integer roleId;
 
-    private String roleName;
+    private String mark;
 
-    private String displayName;
+    private String name;
 
     private Boolean isDefault;
 
     private List<LoginMenuButtonInfo> menus;
-
 }

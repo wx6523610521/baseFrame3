@@ -1,10 +1,10 @@
 package work.chncyl.base.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,29 +25,26 @@ public class CustomUsernamePasswordAuthenticationFilter extends AbstractAuthenti
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        // 登录认证
-        if (request.getContentType().equals("application/json")
-                || request.getContentType().equals("application/json")) {
-            CustomUsernamePasswordAuthenticationToken authenticationToken;
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                // 从RequestBody中获取登录信息，如使用的form表单提交,则使用request.getParameter获取
-                ServletInputStream servletInputStream = request.getInputStream();
-                Map<String, String> authenticationBean = (Map<String, String>) mapper.readValue(servletInputStream, Map.class);
-                String username = authenticationBean.get("userName");
-                String password = authenticationBean.get("password").trim();
-                // 登录认证使用的额外信息
-                String encodeStr = authenticationBean.get("encodeStr");
-                authenticationToken = new CustomUsernamePasswordAuthenticationToken(username, password, encodeStr);
-                setDetails(request, authenticationToken);
-            } catch (IOException e) {
-                e.printStackTrace();
-                authenticationToken = new CustomUsernamePasswordAuthenticationToken("", "", "");
-            }
-            return getAuthenticationManager().authenticate(authenticationToken);
+        String contentType = request.getContentType();
+        if (contentType == null || !contentType.contains("application/json")) {
+            throw new AuthenticationServiceException("不支持的请求类型");
         }
 
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> authenticationBean;
+        try {
+            authenticationBean = (Map<String, String>) mapper.readValue(request.getInputStream(), Map.class);
+        } catch (IOException e) {
+            throw new AuthenticationServiceException("无法解析登录请求");
+        }
+
+        String username = authenticationBean.get("userName");
+        String password = authenticationBean.getOrDefault("password", "").trim();
+        String encodeStr = authenticationBean.get("encodeStr");
+        CustomUsernamePasswordAuthenticationToken authenticationToken =
+                new CustomUsernamePasswordAuthenticationToken(username, password, encodeStr);
+        setDetails(request, authenticationToken);
+        return getAuthenticationManager().authenticate(authenticationToken);
     }
 
     protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {

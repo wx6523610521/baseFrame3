@@ -1,5 +1,6 @@
 package work.chncyl.base.global.tools.result;
 
+import com.alibaba.fastjson2.JSON;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -95,6 +96,10 @@ public class ApiResult<T> implements Serializable {
         return error(HttpStatus.UNAUTHORIZED.value(), message);
     }
 
+    public static <T> ApiResult<T> error403(String message) {
+        return error(HttpStatus.FORBIDDEN.value(), message);
+    }
+
     public static <T> ApiResult<T> error406(String message) {
         return error(HttpStatus.NOT_ACCEPTABLE.value(), message);
     }
@@ -108,4 +113,8 @@ public class ApiResult<T> implements Serializable {
         return error;
     }
 
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

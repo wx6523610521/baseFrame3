@@ -3,73 +3,51 @@
 <mapper namespace="work.chncyl.base.security.mapper.UserDetailsMapper">
     <resultMap id="AuthorityMap" type="work.chncyl.base.security.entity.LoginAuthorityInfo">
         <id column="id" property="roleId" javaType="int" jdbcType="INTEGER"/>
-        <result column="name" property="roleName" jdbcType="VARCHAR"/>
-        <result column="DisplayName" property="displayName" jdbcType="VARCHAR"/>
+        <result column="mark" property="mark" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="IsDefault" property="isDefault" jdbcType="BOOLEAN"/>
         <association property="menus" javaType="java.util.List" column="id"
                      select="getRoleMenuButtonInfo"/>
     </resultMap>
 
     <select id="getUserDetail" resultType="work.chncyl.base.security.entity.LoginUserDetail">
-        SELECT a.id userId,
-               UserName,
-               Password,
-               UserType,
-               Name nickName,
+        SELECT a.id                                                        userId,
+               a.UserName                                               AS realName,
+               b.accountname                                            AS username,
+               b.accountpwd                                             AS password,
+               (case when b.accountstatus = 1 then true else false end) AS enabled,
+               a.user_type                                              AS UserType,
+               b.nickname,
                HeadImage,
-               a.PhoneNumber
-        FROM User a
-        WHERE a.IsDeleted = 0
+               a.phonenum
+        FROM sys_user a
+                 INNER JOIN sys_account b ON a.id = b.UserId
+        WHERE a.IsDeleted = false
         <if test="phoneNum != null and phoneNum != ''">
-            AND a.PhoneNumber = #{phoneNum,jdbcType=VARCHAR}
+            AND a.phonenum = #{phoneNum,jdbcType=VARCHAR}
         </if>
         <if test="userName != null and userName != ''">
-            AND a.UserName = #{userName,jdbcType=VARCHAR}
+            AND b.accountname = #{userName,jdbcType=VARCHAR}
         </if>
     </select>
 
     <select id="getUserAuthorityInfo" resultMap="AuthorityMap">
         SELECT a.id,
                a.Name,
-               a.DisplayName,
+               a.mark ,
                a.IsDefault
-        FROM Role a
-                 INNER JOIN User_Role_Map b ON a.Id = b.RoleId
-        WHERE a.IsDeleted = 0
-          AND b.UserId = #{userId,jdbcType=VARCHAR}
-    </select>
-
-    <select id="getUserManageOrganization" resultType="work.chncyl.base.security.entity.LoginManageOrgan">
-        select b.id roleId,
-               b.roleLevel,
-               a.organId,
-               c.organName,
-               c.organPath
-        from User_Manage_Orgnization_Map a
-                 inner join Role b on a.roleid = b.id
-                 inner join Organization c on a.organid = c.id
-        where b.IsDeleted = 0
-          and c.IsDeleted = 0
-          and a.UserId = #{userId,jdbcType=VARCHAR}
+        FROM sys_role a
+                 INNER JOIN sys_user_role b ON a.Id = b.RoleId
+        WHERE a.IsDeleted = false
+          AND b.UserId = #{userId,jdbcType=BIGINT}
     </select>
 
     <select id="getRoleMenuButtonInfo" resultType="work.chncyl.base.security.entity.LoginMenuButtonInfo">
-        SELECT a.Id,
-               a.`Group`,
-               a.Type,
-               a.ParentId,
-               a.PermissionName,
-               a.DisplayName,
-               a.Description,
-               a.Url,
-               a.IconPath,
-               a.ClassName,
-               a.Sort,
-               a.Tags,
-               a.Tags1
-        FROM permissions a
-                 LEFT JOIN permissions_role_map b ON b.PermissionsId = a.Id
-        WHERE b.RoleId = #{roleId,jdbcType=VARCHAR}
-          AND a.IsDeleted = 0
+        SELECT a.*
+        FROM sys_permissions a
+                 LEFT JOIN sys_role_permission b ON b.permissionid = a.Id
+        WHERE b.RoleId = #{roleId,jdbcType=BIGINT}
+          AND a.IsDeleted = false
+          AND a.status = 1
     </select>
 </mapper>

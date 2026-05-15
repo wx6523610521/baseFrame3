@@ -21,35 +21,61 @@ public class LoginUserDetail implements UserDetails {
         this.enabled = enabled;
     }
 
-    private String userId;
+    public LoginUserDetail(Long userId, String realName, String username, String password, Boolean enabled, String userType, String nickName, String headImage, String phoneNum) {
+        this.userId = userId;
+        this.realName = realName;
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled != null && enabled;
+        this.userType = userType;
+        this.nickName = nickName;
+        this.headImage = headImage;
+        this.phoneNum = phoneNum;
+        this.accountNonLocked = true;
+        this.accountNonExpired = true;
+        this.credentialsNonExpired = true;
+    }
 
+    private Long userId;
+    private String realName;
     private String username;
-
     private String password;
-
-    private Set<GrantedAuthority> authorities;
-
+    private Set<? extends GrantedAuthority> authorities;
     private final boolean accountNonLocked;
-
-    private final boolean enabled;
-
+    private boolean enabled;
+    private boolean accountNonExpired = true;
+    private boolean credentialsNonExpired = true;
     private String accessToken;
-
     private String userType;
-
     private String nickName;
-
     private String headImage;
-
     private String organId;
-
     private String organName;
-
     private String organPath;
+    private String phoneNum;
 
-    private String phoneNumber;
-
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 }

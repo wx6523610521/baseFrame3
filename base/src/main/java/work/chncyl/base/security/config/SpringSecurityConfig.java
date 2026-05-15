@@ -1,6 +1,8 @@
 package work.chncyl.base.security.config;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -23,6 +26,7 @@ import org.springframework.web.util.pattern.PathPattern;
 import work.chncyl.base.global.tools.requestTool.filter.CustomRequestFilter;
 import work.chncyl.base.security.SecurityHandlerConfig;
 import work.chncyl.base.security.annotation.AnonymousAccess;
+import work.chncyl.base.security.filter.CustomInterfaceAccessFilter;
 import work.chncyl.base.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import work.chncyl.base.security.filter.JwtAuthenticationFilter;
 import work.chncyl.base.security.filter.VerifyCodeFilter;
@@ -45,7 +49,10 @@ public class SpringSecurityConfig {
     /**
      * 登录接口地址
      */
-    public static String loginUrl = "/TokenAuth/login";
+    @Value("${security.login.url:/TokenAuth/login}")
+    public String loginUrl = "/TokenAuth/login";
+
+    public static String LOGIN_URL;
 
     private final RequestMappingHandlerMapping handlerMapping;
 
@@ -57,6 +64,11 @@ public class SpringSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
+    @PostConstruct
+    public void init() {
+        LOGIN_URL = loginUrl;
+    }
+
     /**
      * 匿名接口
      */
@@ -64,18 +76,17 @@ public class SpringSecurityConfig {
             "/",
             // Swagger基础路径
             "/swagger-ui.html",
-            "/swagger-ui/ **",          // Swagger UI 3.x资源
+            "/swagger-ui/**",          // Swagger UI 3.x资源
             "/doc.html",               // Knife4j文档页
-            "/knife4j/ **",             // Knife4j静态资源
+            "/knife4j/**",             // Knife4j静态资源
             "/favicon.ico",
-            "/webjars/ **",             // WebJars资源（含Swagger UI依赖）
+            "/webjars/**",             // WebJars资源（含Swagger UI依赖）
             "/**.html", "/**.css", "/**.js",
             // OpenAPI文档数据
             "/swagger-resources/ **",
             "/springdoc/**",
             "/v3/**",
             "/v3/api-docs/**",
-            "/swagger-ui/**",// API文档JSON
             "/webjars/**",// API文档JSON
             "/web/login"
     };
@@ -95,45 +106,60 @@ public class SpringSecurityConfig {
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // 未认证时返回 401，不跳转到登录页
+                            response.setStatus(401);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write(
+                                work.chncyl.base.global.tools.result.ApiResult.error401("未认证或认证失败").toString()
+                            );
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            // 无权限时返回 403
+                            response.setStatus(403);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write(
+                                work.chncyl.base.global.tools.result.ApiResult.error403("无权访问").toString()
+                            );
+                        }))
                 .authorizeHttpRequests(authz -> authz
-                        // 有AnonymousAccess注解的接口
-                        .requestMatchers(getAnonymousUrls())
-                        .permitAll()
-                        // 指定的匿名接口
-                        .requestMatchers(ANONYMOUS_URL)
-                        .permitAll()
-                        // 限制get请求匿名接口
-                        .requestMatchers(HttpMethod.GET, GET_ANONYMOUS_URL)
-                        .permitAll()
-                        // 限制post请求匿名接口
-                        .requestMatchers(HttpMethod.POST, POST_ANONYMOUS_URL)
-                        .permitAll()
+                        .requestMatchers(getAnonymousUrls()).permitAll()
+                        .requestMatchers(ANONYMOUS_URL).permitAll()
+                        .requestMatchers(HttpMethod.GET, GET_ANONYMOUS_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, POST_ANONYMOUS_URL).permitAll()
                         .anyRequest()
                         .authenticated())
                 // 配置session管理器，设置session为无状态，此时对登录成功的用户不会创建Session
-                .sessionManagement(sessionManage -> sessionManage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManage ->
+                        sessionManage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 登出配置
                 .logout(out -> out.addLogoutHandler(SecurityHandlerConfig.logoutHandler())
-                        .logoutUrl("/api/v1/auth/logout")
                         .logoutSuccessHandler(SecurityHandlerConfig.logoutSuccessHandler()))
                 // 配置登录信息
                 .formLogin(login -> login.loginProcessingUrl(loginUrl)
-                        .passwordParameter("password")
-                        .usernameParameter("userName")
-                        .successHandler(SecurityHandlerConfig.loginSuccessHandler())
+                                .passwordParameter("password")
+                                .usernameParameter("userName")
+                        // formLogin中的处理器只影响默认的UsernamePasswordAuthenticationFilter，自定义账号密码校验需要在注册时注入自定义校验器内
+                        /*.successHandler(SecurityHandlerConfig.loginSuccessHandler())
+                        .failureHandler(SecurityHandlerConfig.loginFailureHandler())
+                        //goon 登录页面
+                        .loginPage("/api/v1/auth/login")*/
                 )
                 // 配置认证管理器
                 .authenticationProvider(authenticationProvider())
-                .addFilterAt(new CustomUsernamePasswordAuthenticationFilter(loginUrl,authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(customUsernamePasswordAuthenticationFilter(authenticationConfiguration), UsernamePasswordAuthenticationFilter.class)
                 // 增加jwt验证过滤器
                 .addFilterBefore(jwtAuthenticationFilter(), CustomUsernamePasswordAuthenticationFilter.class)
+                // 增加验证码验证过滤器
+                .addFilterBefore(new VerifyCodeFilter(), CustomUsernamePasswordAuthenticationFilter.class)
                 /*
                     增加自封装请求过滤器，实现请求体的多次读取
                     当前仅限制登录请求允许多次读取，不允许其他请求允许多次读取，可在CustomRequestFilter内配置
                  */
-                .addFilterBefore(new CustomRequestFilter(), CustomUsernamePasswordAuthenticationFilter.class)
-                // 增加验证码验证过滤器
-                .addFilterBefore(new VerifyCodeFilter(), CustomUsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomRequestFilter(), VerifyCodeFilter.class)
+                .addFilterBefore(new CustomInterfaceAccessFilter(), AuthorizationFilter.class)
+        ;
         return http.build();
     }
 
@@ -143,6 +169,7 @@ public class SpringSecurityConfig {
     private String[] getAnonymousUrls() {
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = this.handlerMapping.getHandlerMethods();
         Set<String> allAnonymousAccess = new HashSet<>();
+
         for (Map.Entry<RequestMappingInfo, HandlerMethod> infoEntry : handlerMethods.entrySet()) {
             HandlerMethod value = infoEntry.getValue();
             AnonymousAccess annotation = Optional.ofNullable(value.getBean().getClass().getAnnotation(AnonymousAccess.class)).orElse(value.getMethodAnnotation(AnonymousAccess.class));
@@ -151,10 +178,14 @@ public class SpringSecurityConfig {
                     allAnonymousAccess.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
                     continue;
                 }
-                if (infoEntry.getKey().getPathPatternsCondition() != null)
+                if (infoEntry.getKey().getPathPatternsCondition() != null) {
                     allAnonymousAccess.addAll(infoEntry.getKey().getPathPatternsCondition().getPatterns().stream().map(PathPattern::getPatternString).toList());
+                }
             }
         }
+        
+        System.out.println("总共找到 " + allAnonymousAccess.size() + " 个匿名接口: " + allAnonymousAccess);
+        System.out.println("=== @AnonymousAccess 注解扫描完成 ===");
         return allAnonymousAccess.toArray(new String[0]);
     }
 
@@ -170,9 +201,18 @@ public class SpringSecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        ClientLoginAuthProvider provider = new ClientLoginAuthProvider(passwordEncoder(), this.checkPwdUtils);
-        provider.setUserDetailsService(this.userDetailsService);
-        return provider;
+        ClientLoginAuthProvider clientLoginAuthProvider = new ClientLoginAuthProvider(passwordEncoder(), checkPwdUtils);
+        clientLoginAuthProvider.setUserDetailsService(this.userDetailsService);
+        return clientLoginAuthProvider;
+    }
+
+    @Bean
+    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        CustomUsernamePasswordAuthenticationFilter customFilter =
+                new CustomUsernamePasswordAuthenticationFilter(loginUrl, authenticationConfiguration.getAuthenticationManager());
+        customFilter.setAuthenticationFailureHandler(SecurityHandlerConfig.loginFailureHandler());
+        customFilter.setAuthenticationSuccessHandler(SecurityHandlerConfig.loginSuccessHandler());
+        return customFilter;
     }
 
 }
